@@ -1,0 +1,150 @@
+Unix Command:
+Once you have logged into terminal.
+
+get only lines who have :
+grep ";" HiveCountofDAUHauDAU15minHAU15min.csv  >  HiveAfterCountofDAUHauDAU15minHAU15min.csv
+
+// please use below command to go in SMS_Blast folder
+cd /home/svc_eureka/spectrum/campaign/pipecore/Resources/SMS_Blast
+
+// to check the list in the SMS folder use below command
+ls -ltrh
+
+// to view first 10 records you can you use  below command  by replacing filename
+cat filename | head
+
+// to count  the number of lines   in the SMSblast file use below command, replace filename
+wc -l filename
+
+// to check unique count on MSISDN from the file please use this. please replace the filname
+cat filename|awk -F "|" '{print $2}'|sort|uniq|wc -l
+
+select * from campaign_infos
+where campaign_id = '796bea6f-aeb3-4ad8-9b82-d20de84ce2c0'
+
+select iteration_id, smsfile_format, name, campaign_id from iteration_infos
+where campaign_id = '796bea6f-aeb3-4ad8-9b82-d20de84ce2c0'
+
+to check the Size of the Storage: 
+df -h /Eureka_UPS <== Eureka_UPS is the storage that we want to check
+
+to find specific file or folder:
+find / | grep -i kafka-top      ==> it is used to search everywhere anything related to KAFKA <== -i indicates ignore case sensitive
+find . | grep -i kafka-top ==> find content kafka-top within the current directory you are in
+
+
+to check the memory:
+free -m   ==> displays in MB
+free -g    ==> displays in GB
+free -h    ==> displays in human readable
+
+to check cores:
+cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l
+
+to check whether the job is still running or not:
+ps -ef | grep DailyBridgeJob.sh     <=== DailyBridgeJob.sh is the job name
+
+convert rows to column and set delimiter ; to it Rows is define from NR%4   = Number of Records 4 line
+awk -F ';' 'ORS=NR%4?FS:RS' APICountofDAUHauDAU15minHAU15min.csv > APIFinalCountofDAUHauDAU15minHAU15min.csv
+
+rounding value 
+cat APIAgeDistributePercentage.csv | awk 'BEGIN{ FS=OFS=";" }NR>0{ $2=sprintf("%.2f",$2) }1'      < ==== delimiter ; is mentioned after OFS, delimiter may changed based on  delimiter used in file
+
+finding value which is not equal to ;0
+awk '$1 !~ /;0/' APIPOITrafficChart.csv.       $1 means first column, !~ means not equal to, /;0/   <== the ;0 is the pattern you're looking for
+
+
+Sorting based on column in csv output:
+sort -k2,2nr -k1,1nr -k3,3 -t ";" > APIFinalTop15POIPercentage.csv
+
+
+
+Split files:
+split -l 1000 -a 1 query-impala-55436.csv Beaver
+
+
+
+1000 > indicates the amount row needed for each file:
+-a 1 indicates suffix used to be inputted in file naming sequence
+-a 2 format would be Beaveraa, beaverab, beaverac
+
+Getting specific value in column and move it to another file:
+egrep -e "go_jek|grab" marketintelligence_v0_2020NovFullMonth.csv >> marketintelligence_v0_2020NovFullMonthRevised.csv.   <=== Gojek and grab are the values that I want to get
+
+untuk ambil baris yg dimulai dengan 2021 --> grep ^2021
+untuk ambil baris yg diakhiri dengan 2021 --> grep 2021$
+untuk ambil pattern yang letaknya ditengah atau dimanapun grep '2021.*,' food_delivery_appgroup_geo_wau_20210919.csv | head    <=== .*  artinya mengenable search everything in string yang dicari dari grep stelah angka 2021 
+
+
+zipping  folder :
+-R (recursive will also zip the contents inside the folder)
+ID.zip <== given the zip file name 
+ID <== the targeted folder
+
+zip -r ID.zip ID
+or
+gzip file.txt
+
+dan untuk unzipnya:
+gunzip file.txt.gz
+
+change letters to capital case and lower case
+sed -e "s/\b\(.\)/\u\1/g" 
+
+
+awk command
+https://www.thegeekstuff.com/2010/01/8-powerful-awk-built-in-variables-fs-ofs-rs-ors-nr-nf-filename-fnr/
+
+https://www.unix.com/shell-programming-and-scripting/242843-awk-transpose-every-7-rows-into-columns.html
+
+
+changing delimiters:
+
+https://bconnelly.net/posts/working_with_csvs_on_the_command_line/
+
+Parsing CSV:
+https://www.baeldung.com/linux/csv-parsing
+
+
+to check sum:
+
+cat omni_report_video_44.csv | grep '^20211031,202110,' | awk -F ',' '{ sum += $20 } END { print sum }'
+
+
+awk -F ','  '{ sum += $14 } END { print sum }'   filename
+
+add column and fill with specific value
+awk -v OFS=',' '{ print $0, "(none)", "(none)" }' sample_grab_new_dec_21.csv | head
+
+awk -F, 'NR>1{arr[$4]++}END{for (a in arr) print a, arr[a]}'
+
+awk -F ','  '{ sum += $14 } END { print sum }' 
+
+awk -F "," '{print $1}' ftr_mktintel_competition_M02_22.csv | head
+
+awk -F "," '{print $1","$2","$3","$4","$5","$6","$8","$9","$10","$11","$12","$13","$7}' ftr_mktintel_competition_M02_22.csv | head
+
+change delimiter :
+cat mediastreaming_profile_202204.csv | tr "," ";" > mediastreaming_profile_202204_semicolon.csv
+
+replaced :
+sed -i 's/\./,/g' mediastreaming_profile_202204_semicolon.csv
+sed -i 's/KAB,/KAB./g' mediastreaming_profile_202204_semicolon.csv
+
+/data/home/eureka_dev/dina
+
+sum di unix :
+awk -F ','  '{ sum += $14 } END { print sum }' filename
+
+
+combined csv who have header:
+cat input1.csv > combined.csv
+cat input2.csv | sed "1 d" >> combined.csv
+cat input3.csv | sed "1 d" >> combined.csv
+
+combined csv haven't header :
+cat input1.csv input2.csv input3.csv > combined.csv
+
+print kolom 1 dan 4:
+awk '{print $1,$4}' employee.txt 
+
